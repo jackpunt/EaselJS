@@ -3,7 +3,7 @@
  */
 this.createjs = this.createjs || {};
 
-(function() {
+(function(xx) {   // (xx) so createjs-module knows function is invoked & is not put in the module
 	"use strict";
 
 	/**

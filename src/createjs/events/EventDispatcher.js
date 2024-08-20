@@ -125,6 +125,7 @@ this.createjs = this.createjs||{};
 	 * prototype.
 	 **/
 	EventDispatcher.initialize = function(target) {
+		var p = EventDispatcher.prototype;  // reassert at runtime. The module 'var p' is reused
 		target.addEventListener = p.addEventListener;
 		target.on = p.on;
 		target.removeEventListener = target.off =  p.removeEventListener;
