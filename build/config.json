@@ -42,7 +42,7 @@
 	"../src/easeljs/ui/Touch.js",
 	"../src/easeljs/version.js"
   ],
-  "docs_out_path": "../../createjs-com_version2/docs/easeljs/",
+  "docs_out_path": "../../createjs-com_version-1.0/docs/easeljs/",
   "connect_root": "../",
   "livereload_watch": [
 	"../{examples,extras}/{,*/}*.{png,jpg,jpeg,gif,webp,svg,ogg,mp3,js,css,html}"

@@ -149,7 +149,6 @@ module.exports = function (grunt) {
 					docs: {
 						options: {
 							style: 'compressed',
-							sourcemap:"none"
 						},
 						files: {
 							'createjsTheme/assets/css/main.css': 'createjsTheme/assets/scss/main.scss'

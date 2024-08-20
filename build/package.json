@@ -1,6 +1,6 @@
 {
 	"name": "EaselJS",
-	"version": "1.0.0",
+	"version": "1.0.3",
 	"description": "EaselJS Docs",
 	"url": "http://www.createjs.com/easeljs",
 	"logo": "assets/docs-icon-EaselJS.png",
@@ -18,5 +18,7 @@
     	"grunt-contrib-watch": "~0.6.1",
 		"lodash": "~0.9.2"
 	},
-	"engine": "node >= 0.10.22"
+	"engine": "node >= 0.10.22",
+	"dependencies": {
+	}
 }
