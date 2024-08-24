@@ -32,6 +32,7 @@
 
 // namespace:
 this.createjs = this.createjs||{};
+var ww = (window !== undefined)
 
 (function() {
 	"use strict";
@@ -64,7 +65,7 @@ this.createjs = this.createjs||{};
 	 * @type CanvasRenderingContext2D
 	 * @protected
 	*/
-	var canvas = (createjs.createCanvas?createjs.createCanvas():document.createElement("canvas"));
+	var canvas = (createjs.createCanvas?createjs.createCanvas():ww&&document.createElement("canvas"));
 	if (canvas.getContext) {
 		SpriteSheetUtils._workingCanvas = canvas;
 		SpriteSheetUtils._workingContext = canvas.getContext("2d");

@@ -123,6 +123,7 @@
 
 // namespace:
 this.createjs = this.createjs||{};
+var ww = (window !== undefined)
 
 (function() {
 	"use strict";
@@ -540,7 +541,7 @@ this.createjs = this.createjs||{};
 	 * @static
 	 * @protected
 	 **/
-	var canvas = createjs.createCanvas?createjs.createCanvas():document.createElement("canvas"); // prevent errors on load in browsers without canvas.
+	var canvas = (createjs.createCanvas?createjs.createCanvas():ww&&document.createElement("canvas")); // prevent errors on load in browsers without canvas.
 	if (canvas.getContext) {
 		DisplayObject._hitTestCanvas = canvas;
 		DisplayObject._hitTestContext = canvas.getContext("2d");

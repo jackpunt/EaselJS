@@ -32,6 +32,7 @@
 
 // namespace:
 this.createjs = this.createjs||{};
+var ww = (window !== undefined)
 
 (function() {
 	"use strict";
@@ -401,7 +402,7 @@ this.createjs = this.createjs||{};
 			if (o.w > x) { x = o.w; }
 			y += o.h;
 			if (!o.h || !frames.length) {
-				var canvas = createjs.createCanvas?createjs.createCanvas():document.createElement("canvas");
+				var canvas = (createjs.createCanvas?createjs.createCanvas():ww&&document.createElement("canvas"));
 				canvas.width = this._getSize(x,this.maxWidth);
 				canvas.height = this._getSize(y,this.maxHeight);
 				this._data.images[img] = canvas;

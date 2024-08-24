@@ -32,6 +32,7 @@
 
 // namespace:
 this.createjs = this.createjs||{};
+var ww = (window !== undefined)
 
 (function() {
 	"use strict";
@@ -96,7 +97,7 @@ this.createjs = this.createjs||{};
 		 * @property canvas
 		 * @type HTMLCanvasElement | Object
 		 **/
-		this.canvas = (typeof canvas == "string") ? document.getElementById(canvas) : canvas;
+		this.canvas = (typeof canvas == "string") ? ww&&document.getElementById(canvas) : canvas;
 	
 		/**
 		 * The current mouse X position on the canvas. If the mouse leaves the canvas, this will indicate the most recent

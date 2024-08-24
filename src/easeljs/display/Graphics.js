@@ -32,6 +32,7 @@
 
 // namespace:
 this.createjs = this.createjs||{};
+var ww = (window !== undefined)
 
 (function() {
 	"use strict";
@@ -369,7 +370,7 @@ this.createjs = this.createjs||{};
 	 * @protected
 	 * @type {CanvasRenderingContext2D}
 	 **/
-	var canvas = (createjs.createCanvas?createjs.createCanvas():document.createElement("canvas"));
+	var canvas = (createjs.createCanvas?createjs.createCanvas():ww&&document.createElement("canvas"));
 	if (canvas.getContext) {
 		Graphics._ctx = canvas.getContext("2d");
 		canvas.width = canvas.height = 1;
