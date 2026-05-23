@@ -72,7 +72,7 @@ this.createjs = this.createjs||{};
 	Touch.isSupported = function() {
 		return !!(('ontouchstart' in window) // iOS & Android
 			|| (window.MSPointerEvent && window.navigator.msMaxTouchPoints > 0) // IE10
-			|| (window.PointerEvent && window.navigator.maxTouchPoints > 0)); // IE11+
+			|| (window.PointerEvent)); // IE11+ // removed maxTouchPoints for Prometheous touch boards bug - Dan Zen
 	};
 
 	/**
@@ -98,8 +98,16 @@ this.createjs = this.createjs||{};
 
 		// note that in the future we may need to disable the standard mouse event model before adding
 		// these to prevent duplicate calls. It doesn't seem to be an issue with iOS devices though.
-		if ('ontouchstart' in window) { Touch._IOS_enable(stage); }
-		else if (window.PointerEvent || window.MSPointerEvent) { Touch._IE_enable(stage); }
+
+		// removed by Dan Zen
+		// if ('ontouchstart' in window) { Touch._enable(stage); }
+		// else if (window.PointerEvent || window.MSPointerEvent) { Touch._IE_enable(stage); }
+
+		if (window.PointerEvent || window.MSPointerEvent) { 
+			Touch._IE_enable(stage); 
+		} else if ('ontouchstart' in window || createjs.BrowserDetect.isChrome || createjs.BrowserDetect.isEdge || createjs.BrowserDetect.isFirefox) {                       
+			Touch._enable(stage); 
+		}
 		return true;
 	};
 
@@ -111,7 +119,7 @@ this.createjs = this.createjs||{};
 	 **/
 	Touch.disable = function(stage) {
 		if (!stage||!stage.__touch) { return; }
-		if ('ontouchstart' in window) { Touch._IOS_disable(stage); }
+		if ('ontouchstart' in window) { Touch._disable(stage); }
 		else if (window.PointerEvent || window.MSPointerEvent) { Touch._IE_disable(stage); }
 		
 		delete stage.__touch;
@@ -120,46 +128,60 @@ this.createjs = this.createjs||{};
 
 // Private static methods:
 	/**
-	 * @method _IOS_enable
+	 * @method _enable
 	 * @protected
 	 * @param {Stage} stage
 	 * @static
 	 **/
-	Touch._IOS_enable = function(stage) {
+	Touch._enable = function(stage) {
 		var canvas = stage.canvas;
-		var f = stage.__touch.f = function(e) { Touch._IOS_handleEvent(stage,e); };
-		canvas.addEventListener("touchstart", f, false);
-		canvas.addEventListener("touchmove", f, false);
+		var f = stage.__touch.f = function(e) { Touch._handleEvent(stage,e); };
+		// canvas.addEventListener("touchstart", f, false);
+		// canvas.addEventListener("touchmove", f, false);
+		// canvas.addEventListener("touchend", f, false);
+		// canvas.addEventListener("touchcancel", f, false);
+
+		// adjustments by Dan Zen and Ferudun Veral over the years
+		canvas.addEventListener("pointerdown", function(e) {
+            if (stage.__touch && stage.__touch.preventDefault) return;
+            if (e.pointerType=="touch"){
+                stage.enableDOMEvents(false)				
+            } else if (e.pointerType == "mouse") {
+                stage.enableDOMEvents(true)
+            }
+        }, false);
+		canvas.addEventListener("touchstart", f, {passive: false}); // avoiding error - did not test for older browsers with capture expectations
+		canvas.addEventListener("touchmove", f, {passive: false});
 		canvas.addEventListener("touchend", f, false);
-		canvas.addEventListener("touchcancel", f, false);
+		canvas.addEventListener("touchcancel", f, false);     
 	};
 
 	/**
-	 * @method _IOS_disable
+	 * @method _disable
 	 * @protected
 	 * @param {Stage} stage
 	 * @static
 	 **/
-	Touch._IOS_disable = function(stage) {
+	Touch._disable = function(stage) {
 		var canvas = stage.canvas;
 		if (!canvas) { return; }
 		var f = stage.__touch.f;
-		canvas.removeEventListener("touchstart", f, false);
-		canvas.removeEventListener("touchmove", f, false);
+		canvas.removeEventListener("touchstart", f, false, {passive: false});
+		canvas.removeEventListener("touchmove", f, false, {passive: false});
 		canvas.removeEventListener("touchend", f, false);
 		canvas.removeEventListener("touchcancel", f, false);
 	};
 
 	/**
-	 * @method _IOS_handleEvent
+	 * @method _handleEvent
 	 * @param {Stage} stage
 	 * @param {Object} e The event to handle
 	 * @protected
 	 * @static
 	 **/
-	Touch._IOS_handleEvent = function(stage, e) {
+	Touch._handleEvent = function(stage, e) {
 		if (!stage) { return; }
-		if (stage.__touch.preventDefault) { e.preventDefault&&e.preventDefault(); }
+		if (stage.__touch && stage.__touch.preventDefault) { e.preventDefault&&e.preventDefault(); }
 		var touches = e.changedTouches;
 		var type = e.type;
 		for (var i= 0,l=touches.length; i<l; i++) {
@@ -187,6 +209,10 @@ this.createjs = this.createjs||{};
 		var canvas = stage.canvas;
 		var f = stage.__touch.f = function(e) { Touch._IE_handleEvent(stage,e); };
 
+		// Dan Zen added this to stop flashing in Chrome Dec 30, 2019
+        // thanks Ferudun Vural for report [left in for legacy Chrome]
+        canvas.style["-webkit-tap-highlight-color"] = "transparent";
+
 		if (window.PointerEvent === undefined) {
 			canvas.addEventListener("MSPointerDown", f, false);
 			window.addEventListener("MSPointerMove", f, false);
@@ -211,7 +237,7 @@ this.createjs = this.createjs||{};
 	 * @static
 	 **/
 	Touch._IE_disable = function(stage) {
-		var f = stage.__touch.f;
+		var f = stage.__touch.f;	
 
 		if (window.PointerEvent === undefined) {
 			window.removeEventListener("MSPointerMove", f, false);
@@ -248,6 +274,24 @@ this.createjs = this.createjs||{};
 			if (e.srcElement != stage.canvas) { return; }
 			ids[id] = true;
 			this._handleStart(stage, id, e, e.pageX, e.pageY);
+
+			// Added by Ferudun Vural - tested by Dan Zen [left in for legacy chrome]
+            // only enables or disables events when switching between touch and mouse
+            // does not affect every touch
+                        
+            switch(e.pointerType) {
+              case 'mouse':
+                stage.enableDOMEvents(true);
+                break;
+              case 'touch':
+                stage.enableDOMEvents(false);
+                break;
+              case 'pen':
+                break;
+              default:
+                break;
+            }
+			
 		} else if (ids[id]) { // it's an id we're watching
 			if (type === "MSPointerMove" || type === "pointermove") {
 				this._handleMove(stage, id, e, e.pageX, e.pageY);

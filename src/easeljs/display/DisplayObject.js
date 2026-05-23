@@ -315,7 +315,8 @@ var ww = (window !== undefined)
 		 **/
 		this.x = 0;
 
-		/** The y (vertical) position of the display object, relative to its parent.
+		/** 
+		 * The y (vertical) position of the display object, relative to its parent.
 		 * @property y
 		 * @type {Number}
 		 * @default 0
@@ -1121,9 +1122,9 @@ var ww = (window !== undefined)
 	 * 
 	 * <table>
 	 * 	<tr><td><b>All</b></td><td>
-	 * 		All display objects support setting bounds manually using setBounds(). Likewise, display objects that
-	 * 		have been cached using cache() will return the bounds of their cache. Manual and cache bounds will override
-	 * 		the automatic calculations listed below.
+	 * 		All display objects support setting bounds manually using setBounds(). Likewise, as of v1.0.2, display 
+	 * 		objects that have been cached using cache() will return the bounds of their cache. Manual and cache bounds 
+	 * 		will override the automatic calculations listed below.
 	 * 	</td></tr>
 	 * 	<tr><td><b>Bitmap</b></td><td>
 	 * 		Returns the width and height of the {{#crossLink "Bitmap/sourceRect"}}{{/crossLink}} (if specified) or image,
