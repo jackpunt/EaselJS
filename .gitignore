@@ -4,6 +4,10 @@ build/tmp/
 tests/_SpecRunner.html
 tests/.grunt/
 docs/**/
+# docs/EaselJS_docs.zip is tracked and cannot be ignored
+# hid it with: git update-index --skip-worktree on my local repo
+# to restore: git update-index --no-skip-worktree docs/EaselJS_docs.zip
+# find with: git ls-files -v | grep "^S"
 *TMP*
 node_modules/
 .idea/
