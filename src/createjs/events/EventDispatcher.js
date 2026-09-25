@@ -329,7 +329,7 @@ this.createjs = this.createjs||{};
 
 			// capture & atTarget
 			for (i=l-1; i>=0 && !eventObj.propagationStopped; i--) {
-				list[i]._dispatchEvent(eventObj, 1+(i==0));
+				list[i]._dispatchEvent(eventObj, 1+(i==0?1:0));  // for tsc typing
 			}
 			// bubbling
 			for (i=1; i<l && !eventObj.propagationStopped; i++) {
