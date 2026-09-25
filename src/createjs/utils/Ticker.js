@@ -32,7 +32,6 @@
 
 // namespace:
 this.createjs = this.createjs||{};
-var ww = (window !== undefined)
 
 (function() {
 	"use strict";
@@ -391,6 +390,7 @@ var ww = (window !== undefined)
 	 * @static
 	 * @type {Number}
 	 **/
+  interval = 50;
 	 
 	/**
 	 * Indicates the target frame rate in frames per second (FPS). Effectively just a shortcut to `interval`, where
@@ -626,11 +626,13 @@ var ww = (window !== undefined)
 	 * @static
 	 * @private
 	 **/
-	var w=window, now=ww&&(w.performance.now || w.performance.mozNow || w.performance.msNow || w.performance.oNow || w.performance.webkitNow);
 	Ticker._getTime = function() {
-		return ((now&&now.call(w.performance))||(new Date().getTime())) - Ticker._startTime;
+    return ((now&&now.call(wp))||(new Date().getTime())) - Ticker._startTime;
 	};
 
+	var ww = (window !== undefined)
+	var wp = ww&&window.performance;
+	var now=wp&&(wp.now || wp.mozNow || wp.msNow || wp.oNow || wp.webkitNow);
 
 	createjs.Ticker = Ticker;
 }());
